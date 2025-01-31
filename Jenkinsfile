@@ -32,9 +32,9 @@ pipeline {
                 '''
             }
         }
-        stage('Run Test') {
+        stage('Run Tests') {
             parallel {
-                stage('Test') {
+                stage('Unit Test') {
                     agent {
                         docker {
                             image 'node:18-alpine'
@@ -46,6 +46,11 @@ pipeline {
                             test -f build/index.html
                             npm test
                             '''
+                    }
+                    post {
+                        always {
+                            junit 'test-results/junit.xml'
+                        }
                     }
                 }
 
@@ -66,11 +71,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-    post {
-        always {
-            junit 'test-results/junit.xml'
         }
     }
 }
